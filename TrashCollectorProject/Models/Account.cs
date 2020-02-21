@@ -14,7 +14,9 @@ namespace TrashCollectorProject.Models
         [ForeignKey("History")]
         public int HistoryId { get; set; }
         public History History { get; set; }
+        [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
+        [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
         public bool isActive { get; set; }
         public double Balance { get; set; }

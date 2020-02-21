@@ -10,7 +10,9 @@ namespace TrashCollectorProject.Models
     {
         [Key]
         public int Id { get; set; }
+        [Display(Name = "Scheduled Pickup")]
         public DateTime ScheduledPickup { get; set; }
+        [Display(Name = "One Time Pickup")]
         public DateTime OneTimePickup { get; set; }
         public bool pickupCompleted { get; set; }
     }

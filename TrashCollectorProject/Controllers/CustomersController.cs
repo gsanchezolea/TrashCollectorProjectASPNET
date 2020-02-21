@@ -51,10 +51,10 @@ namespace TrashCollectorProject.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
-            ViewData["AccountId"] = new SelectList(_context.Accounts, "Id", "Id");
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "Id");
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
+
+            Customer customer = new Customer();
+            customer.Address = new Address();
+            return View(customer);
         }
 
         // POST: Customers/Create
@@ -62,18 +62,21 @@ namespace TrashCollectorProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdentityUserId,AddressId,AccountId,FirstName,LastName")] Customer customer)
+        public async Task<IActionResult> Create(Customer customer)
         {
             if (ModelState.IsValid)
             {
                 customer.IdentityUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                customer.Account = new Account();
+                customer.Account.History = new History();
+                _context.Addresses.Add(customer.Address);
+                _context.Accounts.Add(customer.Account);
+                _context.Histories.Add(customer.Account.History);
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AccountId"] = new SelectList(_context.Accounts, "Id", "Id", customer.AccountId);
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "Id", customer.AddressId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
+          
             return View(customer);
         }
 
