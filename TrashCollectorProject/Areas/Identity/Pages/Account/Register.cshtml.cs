@@ -87,7 +87,7 @@ namespace TrashCollectorProject.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    if(await _roleManager.RoleExistsAsync(Input.Role))
+                    if (await _roleManager.RoleExistsAsync(Input.Role))
                     {
                         await _userManager.AddToRoleAsync(user, Input.Role);
                     }
@@ -108,17 +108,18 @@ namespace TrashCollectorProject.Areas.Identity.Pages.Account
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
                     }
+                    else if (Input.Role == ("Customer"))
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("Create", "Customers");
+                    }
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        if (User.IsInRole("Customers")) 
-                        { return RedirectToAction("Create", "Customers"); 
-                        }
-                        else
-                        {
-                            return RedirectToAction("Create", "Employees");
-                        }
+                        return RedirectToAction("Create", "Employees");
                     }
+
+
                 }
                 foreach (var error in result.Errors)
                 {
