@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollectorProject.Data;
 
-namespace TrashCollectorProject.Data.Migrations
+namespace TrashCollectorProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200219153107_FixedTheDbSets")]
-    partial class FixedTheDbSets
+    [Migration("20200224203005_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,10 +50,24 @@ namespace TrashCollectorProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3d6fbfff-fa1b-4005-bbdd-c297043e3908",
-                            ConcurrencyStamp = "d271bed3-c5f4-41fa-b578-ae63113edbac",
+                            Id = "77988e27-eed2-4186-82b3-c3adc6c4d040",
+                            ConcurrencyStamp = "0fa38b13-acaf-4d4b-95ba-63eb8ce269c4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "7be11786-7c5b-4695-bac9-5c31ae3392bd",
+                            ConcurrencyStamp = "9c235417-8da2-48e1-92a7-5ba863ea91c6",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "d92cfa37-f840-4160-8c9c-4b371ae461d5",
+                            ConcurrencyStamp = "633d74e9-9711-4801-b283-4a2d731ed7c4",
+                            Name = "Employee",
+                            NormalizedName = "EMPLOYEE"
                         });
                 });
 
@@ -239,7 +253,10 @@ namespace TrashCollectorProject.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("HistoryId")
+                    b.Property<int>("OneTimePickup")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScheduledPickup")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
@@ -248,9 +265,10 @@ namespace TrashCollectorProject.Data.Migrations
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("pickupCompleted")
+                        .HasColumnType("bit");
 
-                    b.HasIndex("HistoryId");
+                    b.HasKey("Id");
 
                     b.ToTable("Accounts");
                 });
@@ -338,27 +356,6 @@ namespace TrashCollectorProject.Data.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("TrashCollectorProject.Models.History", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("OneTimePickup")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ScheduledPickup")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("pickupCompleted")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Histories");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -406,15 +403,6 @@ namespace TrashCollectorProject.Data.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("TrashCollectorProject.Models.Account", b =>
-                {
-                    b.HasOne("TrashCollectorProject.Models.History", "History")
-                        .WithMany()
-                        .HasForeignKey("HistoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

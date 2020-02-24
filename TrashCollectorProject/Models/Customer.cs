@@ -21,8 +21,10 @@ namespace TrashCollectorProject.Models
         [ForeignKey("Account")]
         public int AccountId { get; set; }
         public Account Account { get; set; }
+        [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
+        [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
     }

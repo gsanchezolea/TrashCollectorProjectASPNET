@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using TrashCollectorProject.Data;
 using TrashCollectorProject.Models;
 
+
 namespace TrashCollectorProject.Controllers
 {
     public class CustomersController : Controller
@@ -23,8 +24,11 @@ namespace TrashCollectorProject.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Customers.Include(c => c.Account).Include(c => c.Address).Include(c => c.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            var userid = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Customer customer;
+            customer = _context.Customers.Where(c => c.IdentityUserId == userid).Include(s=>s.Account).Include(s=>s.Address).SingleOrDefault();
+           
+            return View(customer);
         }
 
         // GET: Customers/Details/5
@@ -54,6 +58,7 @@ namespace TrashCollectorProject.Controllers
 
             Customer customer = new Customer();
             customer.Address = new Address();
+            customer.Account = new Account();           
             return View(customer);
         }
 
@@ -66,18 +71,16 @@ namespace TrashCollectorProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                customer.IdentityUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                customer.Account = new Account();
-                customer.Account.History = new History();
-                _context.Addresses.Add(customer.Address);
+                customer.IdentityUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);                           
+               
                 _context.Accounts.Add(customer.Account);
-                _context.Histories.Add(customer.Account.History);
+                _context.Addresses.Add(customer.Address);
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-          
-            return View(customer);
+
+            return View();
         }
 
         // GET: Customers/Edit/5

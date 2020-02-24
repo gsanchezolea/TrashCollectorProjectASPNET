@@ -23,8 +23,10 @@ namespace TrashCollectorProject.Controllers
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Employees.Include(e => e.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            var userid = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Employee employee = _context.Employees.SingleOrDefault(e => e.IdentityUserId == userid);
+            var customerList = _context.Customers.Where(c => c.Address.Zipcode == employee.Zipcode).ToList();
+            return View(customerList);
         }
 
         // GET: Employees/Details/5
@@ -153,10 +155,11 @@ namespace TrashCollectorProject.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+      
         private bool EmployeeExists(int id)
         {
             return _context.Employees.Any(e => e.Id == id);
         }
+        
     }
 }
